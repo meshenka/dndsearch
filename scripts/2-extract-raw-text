@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+INPUT_FILE=$1
+BASENAME=$(basename "$INPUT_FILE" .pdf);
+INPUT_DIR="./tmp/$BASENAME/pdf-pages"
+OUTPUT_DIR="./tmp/$BASENAME/txt-raw"
+mkdir -p "$OUTPUT_DIR"
+
+for PDF_FILE in $INPUT_DIR/*.pdf; do 
+  PDF_FILE_BASENAME=$(basename "$PDF_FILE" .pdf)
+  echo "Converting $PDF_FILE_BASENAME to txt";
+  pdf-tika-txt "$PDF_FILE" > "${OUTPUT_DIR}/${PDF_FILE_BASENAME}.txt"
+done
+

@@ -1,0 +1,44 @@
+Arguments: 
+  /home/tim/.nvm/versions/node/v9.2.0/bin/node /home/tim/.yarn/bin/yarn.js global bin
+
+PATH: 
+  /home/tim/.nvm/versions/node/v9.2.0/bin:/home/tim/.yarn/bin:/home/tim/.rvm/bin:/home/tim/.linuxbrew/bin:/home/tim/.linuxbrew/sbin:/home/tim/.oroshi/scripts/bin:/home/tim/.oroshi/scripts/bin/vit/bin:/home/tim/.oroshi/scripts/bin/img/bin:/home/tim/.oroshi/scripts/bin/video/bin:/home/tim/.oroshi/scripts/bin/pdf/bin:/home/tim/.oroshi/scripts/bin/convert/bin:/home/tim/.oroshi/private/scripts/bin:/home/tim/.oroshi/scripts/bin/local/rorohiko:/home/tim/.oroshi/private/scripts/bin/local/rorohiko:/home/tim/local/bin:/home/tim/bin:/home/tim/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/tim/.config/yarn/global/node_modules/.bin:/home/tim/local/src/fzf/bin
+
+Yarn version: 
+  1.9.4
+
+Node version: 
+  9.2.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/tim/local/www/algolia/projects/dndsearch/package.json: Unexpected string in JSON at position 314
+      at JSON.parse (<anonymous>)
+      at /home/tim/.yarn/lib/cli.js:1130:59
+      at Generator.next (<anonymous>)
+      at step (/home/tim/.yarn/lib/cli.js:92:30)
+      at /home/tim/.yarn/lib/cli.js:103:13
+      at <anonymous>
+
+npm manifest: 
+  {
+    "name": "dndsearch",
+    "version": "0.0.0",
+    "description": "Example search into D&D5 books",
+    "main": "index.js",
+    "repository": "git@github.com:pixelastic/dndsearch.git",
+    "author": "Pixelastic <tim@pixelastic.com>",
+    "license": "MIT",
+    "scripts": {
+      "0-prepare-dirs": "./scripts/0-prepare-dirs"
+      "1-split-per-page": "./scripts/1-split-per-page"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

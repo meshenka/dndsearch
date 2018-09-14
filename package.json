@@ -1,0 +1,14 @@
+{
+  "name": "dndsearch",
+  "version": "0.0.0",
+  "description": "Example search into D&D5 books",
+  "main": "index.js",
+  "repository": "git@github.com:pixelastic/dndsearch.git",
+  "author": "Pixelastic <tim@pixelastic.com>",
+  "license": "MIT",
+  "scripts": {
+    "1-split-per-page": "./scripts/1-split-per-page",
+    "2-extract-raw-text": "./scripts/2-extract-raw-text",
+    "3-refine-text": "./scripts/3-refine-text"
+  }
+}
