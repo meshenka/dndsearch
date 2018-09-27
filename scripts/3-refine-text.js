@@ -1,6 +1,7 @@
 import refiner from '../src/refiner';
 import firost from 'firost';
 import chalk from 'chalk';
+import _ from 'lodash';
 
 (async () => {
   try {
