@@ -8,15 +8,18 @@ const module = {
    **/
   lines(input) {
     const lines = input.split('\n');
-    const titlePattern = /^(([a-zA-Z] )+).$/;
     const emptyPattern = /^$/;
 
     return _.map(lines, line => {
       // Title
-      if (line.match(titlePattern)) {
+      if (this.lineIsTitle(line)) {
+        const value = _.chain(line)
+          .replace(/ /g, '')
+          .startCase()
+          .value();
         return {
           type: 'title',
-          value: _.replace(line, / /g, ''),
+          value,
         };
       }
 
@@ -32,6 +35,11 @@ const module = {
         value: line,
       };
     });
+  },
+  lineIsTitle(input) {
+    const titlePattern = /^(.  ?)+.?$/;
+    const match = input.match(titlePattern);
+    return Boolean(match);
   },
 };
 

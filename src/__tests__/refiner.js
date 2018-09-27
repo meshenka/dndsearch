@@ -27,4 +27,44 @@ describe('refiner', () => {
       expect(actual[2]).toHaveProperty('value', 'I would like to rage.');
     });
   });
+
+  describe('lineIsTitle', () => {
+    it('should match title with trailing space', () => {
+      const input = 'R a g e ';
+
+      const actual = module.lineIsTitle(input);
+
+      expect(actual).toEqual(true);
+    });
+    it('should match title without trailing space', () => {
+      const input = 'R a g e';
+
+      const actual = module.lineIsTitle(input);
+
+      expect(actual).toEqual(true);
+    });
+    it('should not match regular line', () => {
+      const input = 'This is a normal line';
+
+      const actual = module.lineIsTitle(input);
+
+      expect(actual).toEqual(false);
+    });
+    describe('several words', () => {
+      it('should match title with trailing space', () => {
+        const input = 'G r o g  R a g e ';
+
+        const actual = module.lineIsTitle(input);
+
+        expect(actual).toEqual(true);
+      });
+      it('should match title without trailing space', () => {
+        const input = 'G r o g  R a g e';
+
+        const actual = module.lineIsTitle(input);
+
+        expect(actual).toEqual(true);
+      });
+    });
+  });
 });
