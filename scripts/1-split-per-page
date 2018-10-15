@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 INPUT_FILE=$1
 BASENAME=$(basename "$INPUT_FILE" .pdf);
 OUTPUT_DIR="./tmp/$BASENAME/pdf-pages"
