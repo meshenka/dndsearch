@@ -1,5 +1,6 @@
 /* eslint-disable no-process-exit */
 import _ from 'lodash';
+import os from 'os';
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
@@ -9,36 +10,46 @@ import ProgressBar from 'progress';
 import scissors from 'scissors';
 import pMap from 'p-map';
 import which from 'which';
+const cpuCount = os.cpus().length;
 
 const instance = {
   cache: {},
+
+  /**
+   * Save the specified page to its own file
+   * @param {Number} pageIndex Index of the page to extract, starting from 1
+   * @param {String} destination Path to write the file
+   * @returns {Promise} Resolves when file is written
+   **/
+  async extractPage(pageIndex, destination) {
+    if (fs.existsSync(destination)) {
+      return false;
+    }
+    const command = [
+      'pdftk',
+      `"${this.path}"`,
+      `cat ${pageIndex}`,
+      `output "${destination}"`,
+    ].join(' ');
+    const result = await firost.shell(command);
+    return result;
+  },
+
   /**
    * Returns the number of pages in the PDF
    * @returns {Number} Number of pages
    **/
   async pageCount() {
-    if (!this.cache.pageCount) {
-      this.cache.pageCount = await this.pdf.getNumPages();
+    if (this.cache.pageCount) {
+      return this.cache.pageCount;
     }
-    return this.cache.pageCount;
-  },
-
-  /**
-   * Save the given stream to the specific destination file
-   * @param {Stream} stream Read stream
-   * @param {String} destination Path to save the content
-   * @returns {Promise} Promise fulfilled when file completely written to file
-   **/
-  async saveStream(stream, destination) {
-    return await new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(destination);
-      stream
-        .pipe(writeStream)
-        .on('finish', () => {
-          resolve();
-        })
-        .on('error', reject);
-    });
+    const command = [
+      `pdfinfo "${this.path}"`,
+      "grep '^Pages:'",
+      "awk '{print $2}'",
+    ].join(' | ');
+    const pageCount = await firost.shell(command);
+    return _.parseInt(_.trim(pageCount));
   },
 
   /**
@@ -63,20 +74,11 @@ const instance = {
       async pageIndex => {
         const paddedIndex = zeroFill(4, pageIndex);
         const destinationPath = `${destinationDirectory}/${paddedIndex}.pdf`;
-
-        // Skipping if already exists in destination
-        if (fs.existsSync(destinationPath)) {
-          progress.tick();
-          return false;
-        }
-
-        // Read the stream, and save it to destination
-        const readStream = this.pdf.pages(pageIndex).pdfStream();
-        const savedStream = await this.saveStream(readStream, destinationPath);
+        const result = await this.extractPage(pageIndex, destinationPath);
         progress.tick();
-        return savedStream;
+        return result;
       },
-      { concurrency: 10 }
+      { concurrency: cpuCount }
     );
   },
 
@@ -135,9 +137,12 @@ const module = {
    **/
   checkDependencies() {
     const dependencies = {
-      pdftk: 'PDFToolkit',
       convert: 'ImageMagick',
+      grep: 'basic shell utility',
       gs: 'Ghostscript',
+      pdfinfo: 'part of Xpdf',
+      pdftk: 'PDFToolkit',
+      sed: 'basic shell utility',
     };
     const missingDependencies = _.compact(
       _.map(

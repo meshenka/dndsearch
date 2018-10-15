@@ -23,13 +23,13 @@ import ProgressBar from 'progress';
     await firost.mkdirp(imageFolder);
 
     // Split large PDF into smaller versions, one per page
-    function splitInPages() {
+    async function splitInPages() {
       const pdf = pietro.init(input);
       await pdf.toIndividualPages(pageFolder);
     }
 
     // Convert to PNG
-    function generateImages() {
+    async function generateImages() {
       const pages = await firost.glob(`${pageFolder}/*.pdf`);
       const pageCount = pages.length;
 
@@ -52,15 +52,8 @@ import ProgressBar from 'progress';
       );
     }
 
-    function generateText() {
-    }
-
-
-    // splitInPages();
-    // generateImages();
-    generateText();
-
-
+    await splitInPages();
+    await generateImages();
   } catch (err) {
     console.info(err);
   }
