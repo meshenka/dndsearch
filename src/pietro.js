@@ -56,7 +56,7 @@ const instance = {
       `Extracting individual pages: [:bar] :percent :current/:total`,
       { total: pageCount }
     );
-    const range = _.range(1, pageCount);
+    const range = _.range(1, pageCount + 1);
 
     await pMap(
       range,
@@ -67,13 +67,14 @@ const instance = {
         // Skipping if already exists in destination
         if (fs.existsSync(destinationPath)) {
           progress.tick();
-          return;
+          return false;
         }
 
         // Read the stream, and save it to destination
         const readStream = this.pdf.pages(pageIndex).pdfStream();
-        await this.saveStream(readStream, destinationPath);
+        const savedStream = await this.saveStream(readStream, destinationPath);
         progress.tick();
+        return savedStream;
       },
       { concurrency: 10 }
     );

@@ -3,6 +3,7 @@ import path from 'path';
 import pietro from '../src/pietro';
 import firost from 'firost';
 import pMap from 'p-map';
+import ProgressBar from 'progress';
 
 (async () => {
   try {
@@ -21,22 +22,45 @@ import pMap from 'p-map';
     await firost.mkdirp(pageFolder);
     await firost.mkdirp(imageFolder);
 
-    const pdf = pietro.init(input);
     // Split large PDF into smaller versions, one per page
-    await pdf.toIndividualPages(pageFolder);
+    function splitInPages() {
+      const pdf = pietro.init(input);
+      await pdf.toIndividualPages(pageFolder);
+    }
 
-    // Convert each small file
-    // const pages = await firost.glob(`${pageFolder}/*.pdf`);
-    const pages = await firost.glob(`${pageFolder}/0264.pdf`);
-    await pMap(
-      pages,
-      async pagePath => {
-        const page = pietro.init(pagePath);
-        const paddedBasename = path.basename(pagePath, '.pdf');
-        await page.toImage(path.join(imageFolder, `${paddedBasename}.png`));
-      },
-      { concurrency: 10 }
-    );
+    // Convert to PNG
+    function generateImages() {
+      const pages = await firost.glob(`${pageFolder}/*.pdf`);
+      const pageCount = pages.length;
+
+      const pngProgress = new ProgressBar(
+        `Converting to PNG: [:bar] :percent :current/:total`,
+        { total: pageCount }
+      );
+      await pMap(
+        pages,
+        async pagePath => {
+          const page = pietro.init(pagePath);
+          const paddedBasename = path.basename(pagePath, '.pdf');
+          const result = await page.toImage(
+            path.join(imageFolder, `${paddedBasename}.png`)
+          );
+          pngProgress.tick();
+          return result;
+        },
+        { concurrency: 10 }
+      );
+    }
+
+    function generateText() {
+    }
+
+
+    // splitInPages();
+    // generateImages();
+    generateText();
+
+
   } catch (err) {
     console.info(err);
   }
