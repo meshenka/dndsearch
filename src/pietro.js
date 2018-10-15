@@ -7,7 +7,6 @@ import chalk from 'chalk';
 import zeroFill from 'zero-fill';
 import firost from 'firost';
 import ProgressBar from 'progress';
-import scissors from 'scissors';
 import pMap from 'p-map';
 import which from 'which';
 const cpuCount = os.cpus().length;
@@ -125,7 +124,6 @@ const instance = {
 const module = {
   init(inputPath) {
     return {
-      pdf: scissors(inputPath),
       path: path.resolve(inputPath),
       ...instance,
     };
