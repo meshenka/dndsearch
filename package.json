@@ -8,8 +8,6 @@
   "license": "MIT",
   "scripts": {
     "export": "babel-node ./scripts/export.js",
-    "1-split-per-page": "./scripts/1-split-per-page",
-    "2-extract-raw-text": "./scripts/2-extract-raw-text",
     "3-refine-text": "babel-node ./scripts/3-refine-text.js",
     "build": "./scripts/build",
     "lint": "./scripts/lint",

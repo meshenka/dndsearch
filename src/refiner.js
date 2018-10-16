@@ -14,8 +14,7 @@ const module = {
       // Title
       if (this.lineIsTitle(line)) {
         const value = _.chain(line)
-          .replace(/ /g, '')
-          .startCase()
+          .replace(/ ([^ ])/g, '$1')
           .value();
         return {
           type: 'title',
@@ -30,16 +29,60 @@ const module = {
         };
       }
 
+      let value = _.chain(line)
+        .replace(/\b(w) /gi, '$1')
+        .replace(/ {2}/g, ' ')
+        .replace(/o f\b/g, 'of')
+        .replace(/ ’/g, "'")
+        .replace(/’/g, "'")
+        // .replace(/som e/g, 'some')
+        .value();
+
+      value = this.fixBadSpacing(value);
+
       return {
         type: 'text',
-        value: line,
+        value,
       };
     });
   },
+  /**
+   * Some words aren't correctly extracted and have weird space after some
+   * characters. We'll build a list of words to change
+   * @param {String} input Input string to fix
+   * @returns {String} Fixed string
+   **/
+  fixBadSpacing(input) {
+    let output = input;
+    const knownBadWords = [
+      'm axim um',
+      'charm ed',
+      'em body',
+      'pow er',
+      'com bat',
+      'som eone',
+      'som e',
+    ];
+
+    // Fix the most common issues
+    _.each(knownBadWords, word => {
+      const wellWritten = _.replace(word, / /g, '');
+      output = _.replace(output, word, wellWritten);
+    });
+
+    return output;
+  },
+  /**
+   * Guess if a line is a title. Titles have a lot of empty spaces.
+   * @param {String} input String to test
+   * @returns {Boolean} True if we think it's a title
+   **/
   lineIsTitle(input) {
-    const titlePattern = /^(.  ?)+.?$/;
-    const match = input.match(titlePattern);
-    return Boolean(match);
+    // Titles have additional spaces almost between each letter. We'll just
+    // check if the ratio of spaces to characters seems too high.
+    const spaceCount = (input.match(/ /g) || []).length;
+    const length = input.length;
+    return spaceCount / length > 0.4;
   },
 };
 

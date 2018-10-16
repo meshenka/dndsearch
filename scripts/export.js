@@ -1,10 +1,13 @@
 /* eslint-disable no-process-exit */
-import path from 'path';
-import os from 'os';
-import pietro from '../src/pietro';
-import firost from 'firost';
-import pMap from 'p-map';
+import chalk from 'chalk';
 import ProgressBar from 'progress';
+import firost from 'firost';
+import os from 'os';
+import pMap from 'p-map';
+import path from 'path';
+import pietro from '../src/pietro';
+import refiner from '../src/refiner';
+import _ from 'lodash';
 const cpuCount = os.cpus().length;
 
 // Split large PDF into smaller versions, one per page
@@ -15,9 +18,8 @@ async function splitInPages(input, destination) {
 }
 
 // Convert to PNG
-async function generateImages(source, destination) {
+async function generateImages(pages, destination) {
   await firost.mkdirp(destination);
-  const pages = await firost.glob(`${source}/*.pdf`);
   const pageCount = pages.length;
 
   const progress = new ProgressBar(
@@ -40,9 +42,8 @@ async function generateImages(source, destination) {
 }
 
 // Extract text
-async function generateText(source, destination) {
+async function generateText(pages, destination) {
   await firost.mkdirp(destination);
-  const pages = await firost.glob(`${source}/*.pdf`);
   const pageCount = pages.length;
 
   const progress = new ProgressBar(
@@ -64,6 +65,27 @@ async function generateText(source, destination) {
   );
 }
 
+// Convert text to records
+async function generateRecords(texts, _estination) {
+  const raw = await firost.read(texts[42]);
+
+  const lines = refiner.lines(raw);
+  const colors = {
+    title: 'yellow',
+    text: 'white',
+  };
+  _.each(lines, line => {
+    const type = line.type;
+    const value = line.value;
+    const color = colors[type];
+    if (!color) {
+      return;
+    }
+
+    console.info(chalk[color](value));
+  });
+}
+
 (async () => {
   try {
     if (!pietro.checkDependencies()) {
@@ -78,10 +100,16 @@ async function generateText(source, destination) {
     const pageFolder = path.join(tmpFolder, 'pages');
     const imageFolder = path.join(tmpFolder, 'images');
     const textFolder = path.join(tmpFolder, 'text');
+    const recordFolder = path.join(tmpFolder, 'records');
 
-    await splitInPages(input, pageFolder);
-    await generateImages(pageFolder, imageFolder);
-    await generateText(pageFolder, textFolder);
+    // await splitInPages(input, pageFolder);
+
+    // const pages = await firost.glob(`${pageFolder}/*.pdf`);
+    // await generateImages(pages, imageFolder);
+    // await generateText(pages, textFolder);
+
+    const texts = await firost.glob(`${textFolder}/*.txt`);
+    await generateRecords(texts, recordFolder);
   } catch (err) {
     console.info(err);
   }
