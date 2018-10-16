@@ -172,4 +172,17 @@ describe('refiner', () => {
       });
     });
   });
+  describe('shouldNotBeIndexed', () => {
+    it('should return true for TOC lines', () => {
+      const input = {
+        isText: true,
+        content:
+          'Beyond 1st L evel............................................................... 15',
+      };
+
+      const actual = module.shouldNotBeIndexed(input);
+
+      expect(actual).toEqual(true);
+    });
+  });
 });

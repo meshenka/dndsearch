@@ -78,6 +78,21 @@ const module = {
     const length = input.length;
     return spaceCount / length > 0.4;
   },
+  /**
+   * Guess if a record should be skipped from indexing
+   * @param {Object} record The record to test
+   * @returns {Boolean} True if this is garbage
+   **/
+  shouldNotBeIndexed(record) {
+    const content = record.content;
+    if (record.isText) {
+      if (content.match(/\.{5}/)) {
+        return true;
+      }
+    }
+
+    return false;
+  },
 };
 
 export default _.bindAll(module, _.functions(module));

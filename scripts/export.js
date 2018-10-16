@@ -146,21 +146,22 @@ async function generateRecords(texts, destination) {
 
 async function mergeRecordsInOneFile(source) {
   const allFiles = await firost.glob(`${source}/*.json`);
-  let records = [];
+  let allRecords = [];
   await pMap(
     allFiles,
     async filepath => {
-      const content = await firost.readJson(filepath);
-      records.push(...content);
+      let records = await firost.readJson(filepath);
+      records = _.reject(records, record => refiner.shouldNotBeIndexed(record));
+      allRecords.push(...records);
     },
     { concurrency: 10 }
   );
 
-  records = _.sortBy(records, ['pageIndex', 'positionInPage']);
+  allRecords = _.sortBy(allRecords, ['pageIndex', 'positionInPage']);
 
-  await firost.writeJson('./records.json', records);
+  await firost.writeJson('./records.json', allRecords);
 
-  return records;
+  return allRecords;
 }
 
 (async () => {
