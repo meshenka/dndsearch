@@ -88,7 +88,7 @@ const instance = {
    **/
   async toImage(destination) {
     if (fs.existsSync(destination)) {
-      return;
+      return false;
     }
 
     const command = [
@@ -101,8 +101,7 @@ const instance = {
     ].join(' ');
 
     try {
-      await firost.shell(command);
-      return;
+      return await firost.shell(command);
     } catch (err) {
       // Default ImageMagick installation have a policy to prevent converting
       // PDF. We'll try to catch that and explain how to fix it
@@ -117,7 +116,26 @@ const instance = {
         process.exit(1);
       }
       console.info(err);
+      return false;
     }
+  },
+
+  async toText(destination) {
+    if (fs.existsSync(destination)) {
+      return false;
+    }
+
+    const jarFile = process.env.TIKA_JAR;
+
+    const command = [
+      'java',
+      `-jar "${jarFile}"`,
+      '--text',
+      `"${this.path}"`,
+      `> "${destination}"`,
+    ].join(' ');
+
+    return await firost.shell(command);
   },
 };
 
@@ -138,6 +156,7 @@ const module = {
       convert: 'ImageMagick',
       grep: 'basic shell utility',
       gs: 'Ghostscript',
+      java: 'Java',
       pdfinfo: 'part of Xpdf',
       pdftk: 'PDFToolkit',
       sed: 'basic shell utility',
@@ -150,16 +169,27 @@ const module = {
       )
     );
 
-    if (_.isEmpty(missingDependencies)) {
-      return true;
+    if (!_.isEmpty(missingDependencies)) {
+      const errorMessage = ['Missing dependencies:'];
+      _.each(missingDependencies, dependency => {
+        errorMessage.push(`- ${dependency.command} (${dependency.name})`);
+      });
+      console.error(chalk.red(errorMessage.join('\n')));
+      return false;
     }
 
-    const errorMessage = ['Missing dependencies:'];
-    _.each(missingDependencies, dependency => {
-      errorMessage.push(`- ${dependency.command} (${dependency.name})`);
-    });
-    console.error(chalk.red(errorMessage.join('\n')));
-    return false;
+    if (!process.env.TIKA_JAR) {
+      const errorMessage = `
+ Apache Tika is required to extract textual content.
+ You need to set the TIKA_JAR env variable to the path to your Apache Tika jar.
+ Download it from here:
+  https://www.apache.org/dyn/closer.cgi/tika/tika-app-1.19.1.jar
+`;
+      console.error(chalk.red(errorMessage));
+      return false;
+    }
+
+    return true;
   },
 };
 
