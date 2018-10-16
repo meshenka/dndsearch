@@ -36,6 +36,7 @@ const module = {
         .replace(/ {2}/g, ' ')
         .replace(/ ’/g, "'")
         .replace(/’/g, "'")
+        .replace(/­ /, '') // <= There is a soft hyphen char here
         .value();
 
       return {
