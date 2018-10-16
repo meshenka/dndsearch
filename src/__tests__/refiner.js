@@ -117,6 +117,13 @@ describe('refiner', () => {
 
       expect(actual).toEqual('maximum for those scores is now 24.');
     });
+    it('should fix "Gnom es"', () => {
+      const input = 'They are Gnom es hey';
+
+      const actual = module.fixBadSpacing(input);
+
+      expect(actual).toEqual('They are Gnomes hey');
+    });
   });
 
   describe('lineIsTitle', () => {

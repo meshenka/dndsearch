@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import knownBadWords from './bad-words.json';
 
 const module = {
   /**
@@ -54,20 +55,16 @@ const module = {
    **/
   fixBadSpacing(input) {
     let output = input;
-    const knownBadWords = [
-      'm axim um',
-      'charm ed',
-      'em body',
-      'pow er',
-      'com bat',
-      'som eone',
-      'som e',
-    ];
 
     // Fix the most common issues
     _.each(knownBadWords, word => {
-      const wellWritten = _.replace(word, / /g, '');
-      output = _.replace(output, word, wellWritten);
+      const match = output.match(new RegExp(`${word}`, 'i'));
+      if (!match) {
+        return;
+      }
+      const badlyWritten = match[0];
+      const wellWritten = _.replace(badlyWritten, / /g, '');
+      output = _.replace(output, badlyWritten, wellWritten);
     });
 
     return output;

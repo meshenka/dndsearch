@@ -66,24 +66,67 @@ async function generateText(pages, destination) {
 }
 
 // Convert text to records
-async function generateRecords(texts, _estination) {
-  const raw = await firost.read(texts[42]);
+async function generateRecords(texts, destination) {
+  await firost.mkdirp(destination);
+  const pageCount = texts.length;
 
-  const lines = refiner.lines(raw);
-  const colors = {
-    title: 'yellow',
-    text: 'white',
-  };
-  _.each(lines, line => {
-    const type = line.type;
-    const value = line.value;
-    const color = colors[type];
-    if (!color) {
-      return;
-    }
+  const progress = new ProgressBar(
+    `Converting to records: [:bar] :percent :current/:total`,
+    { total: pageCount }
+  );
 
-    console.info(chalk[color](value));
-  });
+  await pMap(
+    texts,
+    async textPath => {
+      const raw = await firost.read(textPath);
+      const lines = refiner.lines(raw);
+      const records = [];
+      const pageIndex = _.parseInt(path.basename(textPath, '.txt'));
+      let currentContent = [];
+      const commonData = {
+        pageIndex,
+      };
+
+      _.each(lines, line => {
+        const isText = line.type === 'text';
+        const isEmpty = line.type === 'empty';
+        const value = line.value;
+
+        // Store all text content to create a paragraph
+        if (isText) {
+          currentContent.push(value);
+          return;
+        }
+
+        // End of paragraph, we add it
+        if (!_.isEmpty(currentContent)) {
+          records.push({
+            type: 'text',
+            ...commonData,
+            content: currentContent.join(' '),
+          });
+          currentContent = [];
+        }
+
+        if (isEmpty) {
+          return;
+        }
+
+        records.push({
+          type: 'title',
+          ...commonData,
+          content: value,
+        });
+      });
+
+      const paddedBasename = path.basename(textPath, '.txt');
+      const recordPath = path.join(destination, `${paddedBasename}.json`);
+      const result = await firost.writeJson(recordPath, records);
+      progress.tick();
+      return result;
+    },
+    { concurrency: 10 }
+  );
 }
 
 (async () => {
