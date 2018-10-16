@@ -113,7 +113,8 @@ async function generateRecords(texts, destination) {
         // End of paragraph, we add it
         if (!_.isEmpty(currentContent)) {
           const content = _.chain(currentContent.join(' '))
-            .replace('  ', ' ')
+            .replace(/ {2}/g, ' ')
+            .replace(/­ /, '') // <= There is a soft hyphen here
             .value();
           records.push({
             content,
