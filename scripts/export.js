@@ -113,11 +113,11 @@ async function generateRecords(texts, destination) {
         // End of paragraph, we add it
         if (!_.isEmpty(currentContent)) {
           records.push({
+            content: currentContent.join(' '),
             isText: true,
             isTitle: false,
             positionInPage,
             ...commonData,
-            content: currentContent.join(' '),
           });
           currentContent = [];
           positionInPage++;
@@ -128,10 +128,11 @@ async function generateRecords(texts, destination) {
         }
 
         records.push({
+          content: value,
           isText: false,
           isTitle: true,
+          positionInPage,
           ...commonData,
-          content: value,
         });
         positionInPage++;
       });
