@@ -1,7 +1,7 @@
 /* eslint-disable no-process-exit */
-import chalk from 'chalk';
 import ProgressBar from 'progress';
 import firost from 'firost';
+import fs from 'fs';
 import os from 'os';
 import pMap from 'p-map';
 import path from 'path';
@@ -78,14 +78,26 @@ async function generateRecords(texts, destination) {
   await pMap(
     texts,
     async textPath => {
+      // Skip if already extracted
+      const paddedBasename = path.basename(textPath, '.txt');
+      const recordPath = path.join(destination, `${paddedBasename}.json`);
+      if (fs.existsSync(recordPath)) {
+        return false;
+      }
+
+      // Get parsed lines from the raw text
       const raw = await firost.read(textPath);
       const lines = refiner.lines(raw);
-      const records = [];
+
       const pageIndex = _.parseInt(path.basename(textPath, '.txt'));
-      let currentContent = [];
       const commonData = {
         pageIndex,
       };
+
+      // Build a set of records by aggregating text as paragraphs
+      const records = [];
+      let currentContent = [];
+      let positionInPage = 0;
 
       _.each(lines, line => {
         const isText = line.type === 'text';
@@ -101,11 +113,14 @@ async function generateRecords(texts, destination) {
         // End of paragraph, we add it
         if (!_.isEmpty(currentContent)) {
           records.push({
-            type: 'text',
+            isText: true,
+            isTitle: false,
+            positionInPage,
             ...commonData,
             content: currentContent.join(' '),
           });
           currentContent = [];
+          positionInPage++;
         }
 
         if (isEmpty) {
@@ -113,20 +128,39 @@ async function generateRecords(texts, destination) {
         }
 
         records.push({
-          type: 'title',
+          isText: false,
+          isTitle: true,
           ...commonData,
           content: value,
         });
+        positionInPage++;
       });
 
-      const paddedBasename = path.basename(textPath, '.txt');
-      const recordPath = path.join(destination, `${paddedBasename}.json`);
       const result = await firost.writeJson(recordPath, records);
       progress.tick();
       return result;
     },
     { concurrency: 10 }
   );
+}
+
+async function mergeRecordsInOneFile(source) {
+  const allFiles = await firost.glob(`${source}/*.json`);
+  let records = [];
+  await pMap(
+    allFiles,
+    async filepath => {
+      const content = await firost.readJson(filepath);
+      records.push(...content);
+    },
+    { concurrency: 10 }
+  );
+
+  records = _.sortBy(records, ['pageIndex', 'positionInPage']);
+
+  await firost.writeJson('./records.json', records);
+
+  return records;
 }
 
 (async () => {
@@ -145,14 +179,16 @@ async function generateRecords(texts, destination) {
     const textFolder = path.join(tmpFolder, 'text');
     const recordFolder = path.join(tmpFolder, 'records');
 
-    // await splitInPages(input, pageFolder);
+    await splitInPages(input, pageFolder);
 
-    // const pages = await firost.glob(`${pageFolder}/*.pdf`);
-    // await generateImages(pages, imageFolder);
-    // await generateText(pages, textFolder);
+    const pages = await firost.glob(`${pageFolder}/*.pdf`);
+    await generateImages(pages, imageFolder);
+    await generateText(pages, textFolder);
 
     const texts = await firost.glob(`${textFolder}/*.txt`);
     await generateRecords(texts, recordFolder);
+
+    await mergeRecordsInOneFile(recordFolder);
   } catch (err) {
     console.info(err);
   }

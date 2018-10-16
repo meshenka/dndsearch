@@ -30,16 +30,13 @@ const module = {
         };
       }
 
-      let value = _.chain(line)
-        .replace(/\b(w) /gi, '$1')
+      let value = line;
+      value = this.fixBadSpacing(value);
+      value = _.chain(value)
         .replace(/ {2}/g, ' ')
-        .replace(/o f\b/g, 'of')
         .replace(/ ’/g, "'")
         .replace(/’/g, "'")
-        // .replace(/som e/g, 'some')
         .value();
-
-      value = this.fixBadSpacing(value);
 
       return {
         type: 'text',
@@ -58,13 +55,13 @@ const module = {
 
     // Fix the most common issues
     _.each(knownBadWords, word => {
-      const match = output.match(new RegExp(`${word}`, 'i'));
+      const match = output.match(new RegExp(word, 'i'));
       if (!match) {
         return;
       }
       const badlyWritten = match[0];
       const wellWritten = _.replace(badlyWritten, / /g, '');
-      output = _.replace(output, badlyWritten, wellWritten);
+      output = _.replace(output, new RegExp(badlyWritten, 'g'), wellWritten);
     });
 
     return output;
