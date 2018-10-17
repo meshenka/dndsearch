@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+set -e
+
+yarn run build
+
+rsync \
+      --chmod=Du=rwx,Dg=rwx,Do=rx,Fu=rw,Fg=rw,Fo=r \
+      --verbose \
+      --archive \
+      --update \
+      --delete \
+      --prune-empty-dirs \
+      --copy-links \
+      --compress \
+      ./dist/ \
+      pixelastic:/var/www/gamemaster.pixelastic.com/dndsearch
+

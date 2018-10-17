@@ -11,6 +11,7 @@
     "push": "babel-node ./scripts/push.js",
     "build": "NODE_ENV=production babel-node ./scripts/website/build.js",
     "serve": "babel-node ./scripts/website/serve.js",
+    "deploy": "./scripts/deploy",
     "lint": "./scripts/lint",
     "test": "./scripts/test",
     "test:watch": "./scripts/test-watch"
