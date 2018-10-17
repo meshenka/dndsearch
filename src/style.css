@@ -46,14 +46,8 @@ a:focus {
 }
 
 /* Hits */
-.ais-hits {
-  @apply flex flrw;
-}
-.ais-hits--item {
-  @apply flex fln w-100 p-0x;
-}
-.hit-title .ais-highlight {
-  @apply text-red;
+.ais-highlight {
+  @apply bold text-red-1;
 }
 
 /* Pagination */

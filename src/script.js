@@ -6,7 +6,7 @@ const search = instantsearch({
   indexName: 'dndsearch',
   routing: true,
   searchParameters: {
-    hitsPerPage: 15,
+    hitsPerPage: 9,
   },
 });
 
@@ -23,30 +23,40 @@ search.addWidget(
 function highlight(hit, key) {
   return _.get(hit, `_highlightResult.${key}.value`, _.get(hit, key));
 }
+function snippet(hit, key) {
+  return _.get(hit, `_snippetResult.${key}.value`, _.get(hit, key));
+}
 
 // There is a slight variation in number between the pdf page index and the
 // real page notation
 function pageNumber(item) {
-  return _.get(item, 'pageIndex') + 6;
+  return _.get(item, 'pageIndex') + 11;
 }
 
 function thumbnailPath(item) {
-  const imageIndex = _.get(item, 'pageIndex') - 1;
+  const imageIndex = _.get(item, 'pageIndex') + 14;
   const paddedIndex = _.padStart(imageIndex, 4, '0');
   return `./assets/thumbnails/players-handbook/${paddedIndex}.png`;
+}
+
+function content(item) {
+  return snippet(item, 'content');
 }
 
 function hitTemplate(item) {
   console.info(item);
   return `
-  <div class="w-100 md_w-50 border border-red-3 flex flrnw p-0x">
+  <div class="w-100 border border-grey bg-grey--3 flex flrnw p-0x">
     <div 
-      class="min-h-5 bg-4x bg-no-repeat flex flrnw flc" 
+      class="min-h-5 bg-4x bg-no-repeat flex flrnw flc relative" 
       style="background-image:url(${thumbnailPath(item)})"
     >
+      <div class="absolute pin-b pin-l p-0x bg-grey-3 text-white bold rounded-2">
+        Page ${pageNumber(item)} ${item.pageIndex}
+      </div>
+
       <div class="ml-3x mr-0x bg-black-90 text-grey--1 rounded-2 p-1 leading-1">
-        <div>Page ${pageNumber(item)}</div>
-        <div>${highlight(item, 'content')}</div>
+        <div>${content(item)}</div>
       </div>
     </div>
   </div>
@@ -56,6 +66,10 @@ function hitTemplate(item) {
 search.addWidget(
   instantsearch.widgets.hits({
     container: '#hits',
+    cssClasses: {
+      root: 'flex flrw',
+      item: 'flex fln w-100 md_w-50 xl_w-33 p-0x',
+    },
     templates: {
       item: hitTemplate,
       empty: 'Sorry, no results found',
