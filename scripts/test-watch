@@ -5,4 +5,4 @@ jest \
   --config ./jest.config.js \
   --watch \
   --no-watchman \
-  ./src ./configs
+  ./lib
