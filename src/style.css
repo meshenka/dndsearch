@@ -1,0 +1,179 @@
+@import "./_styles/tailwind.css";
+@import "./_styles/debug.css";
+
+/* Global styles */
+a,
+a:active {
+  @apply .cursor-pointer .no-underline;
+}
+a:hover,
+a:focus {
+  @apply .underline;
+}
+/* Zoom */
+.hover_zoom-1 {
+  transition: transform .1s ease-in-out;
+  @apply cursor-pointer;
+}
+.hover_zoom-1:hover {
+  transform: scale(1.5);
+  z-index: 1000;
+}
+
+/* Add an ellipsis to the placeholder */
+.ais-search-box--input::placeholder {
+  text-overflow: ellipsis !important;
+}
+
+/* Searchbox magnifying glass */
+.ais-search-box--magnifier {
+  @apply .hidden;
+  @apply .absolute .pin-y .pin-l;
+  @apply .w-1;
+  @apply .ml-1;
+  @apply .text-white .fill-current;
+}
+@screen sm {
+  .ais-search-box--magnifier {
+    @apply .block;
+    @apply .w-2;
+  }
+}
+
+/* Searchbox close icon */
+.ais-search-box--reset {
+  @apply .hidden;
+  @apply .absolute .pin-y .pin-r;
+  @apply .w-2;
+  @apply .mr-1;
+  @apply .text-white-75 .fill-current .bg-transparent;
+}
+@screen sm {
+  .ais-search-box--reset {
+    @apply .block;
+  }
+}
+
+/* Checkbox */
+.checkbox {
+  @apply relative inline-block;
+  width: 30px;
+  height: 15px;
+}
+.checkbox:before {
+  content: "";
+  @apply block absolute;
+  top: 50%;
+  bottom: 50%;
+  left: 0;
+  border-radius: 50px;
+  width: 30px;
+  height: 15px;
+  margin-top: -7.5px;
+  background: #bdc3c7;
+}
+.checkbox:after {
+  content: "";
+  @apply block absolute;
+
+  width: 13px;
+  height: 13px;
+  border-radius: 50px;
+  top: 50%;
+  bottom: 50%;
+  margin-top: -6.5px;
+  background: #fff;
+  left: 2px;
+}
+.checkbox-on:before {
+  @apply bg-green-3;
+}
+.checkbox-on:after {
+  transform: translateX(13px);
+}
+
+/* Radio */
+.radio {
+  @apply relative inline-block h-1 w-1;
+  @apply bg-grey rounded-100 cursor-pointer;
+}
+.radio:hover {
+  @apply bg-grey-1;
+}
+.radio-on:before {
+  content: "✔";
+  @apply block h-1 w-1;
+  @apply text-center text-green-3 text--1 align-middle;
+}
+
+/* Hits */
+.ais-hits {
+  @apply flex flrw;
+}
+.ais-hits--item {
+  @apply flex fln w-100 p-0x;
+}
+.hit-title .ais-highlight {
+  @apply text-red;
+}
+
+/* Feature montage */
+.montage-wrapper {
+  width: 560px;
+}
+.montage {
+  @apply .bg-no-repeat bg-cover;
+  /* @apply border-1 border-black-pure; */
+  background-position-x: center;
+  width: 280px;
+  height: 140px;
+}
+.montage-1 {
+  background-position-y: -56px;
+}
+.montage-2 {
+  background-position-y: -193px;
+}
+.montage-3 {
+  background-position-y: -332px;
+}
+.montage-4 {
+  background-position-y: -476px;
+}
+
+/* Preview */
+.preview {
+  @apply .bg-no-repeat bg-cover;
+  background-position-x: center;
+  width: 250px;
+  height: 250px;
+  background-position-y: -149px;
+}
+
+/* Pagination */
+.ais-pagination {
+  @apply .list-reset .text-center .my-1;
+}
+.ais-pagination--item {
+  @apply .rounded-100;
+  @apply .inline-block;
+  @apply .bold .text-3;
+  @apply .mx-0x;
+}
+.ais-pagination--item:hover,
+.ais-pagination--item__active {
+  @apply .bg-green-3 
+}
+.ais-pagination--item:hover .ais-pagination--link,
+.ais-pagination--item__active .ais-pagination--link {
+  @apply text-white;
+  @apply .no-underline;
+}
+.ais-pagination--link {
+  @apply .text-black;
+  @apply .no-underline;
+  @apply .px-1;
+}
+.ais-pagination--item__disabled {
+  @apply .hidden;
+}

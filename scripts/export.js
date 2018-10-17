@@ -6,8 +6,8 @@ import fs from 'fs';
 import os from 'os';
 import pMap from 'p-map';
 import path from 'path';
-import pietro from '../src/pietro';
-import refiner from '../src/refiner';
+import pietro from '../lib/pietro';
+import refiner from '../lib/refiner';
 import _ from 'lodash';
 const cpuCount = os.cpus().length;
 

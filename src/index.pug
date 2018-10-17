@@ -1,0 +1,43 @@
+doctype html
+html(lang='en')
+  head
+    - const ogImage = site.url + 'img/og_image.png';
+    meta(charset='utf-8')
+    meta('http-equiv'='x-ua-compatible',content='ie-edge')
+    title= site.title
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content=site.description)
+    meta(name='twitter:card', content='summary_large_image')
+    meta(name='twitter:site', content='@pixelastic')
+    meta(name='twitter:creator', content='@pixelastic')
+    meta(property='og:url', content=siteUrl)
+    meta(property='og:title', content=site.title)
+    meta(property='og:description', content=site.description)
+    meta(property='og:image', content=ogImage)
+    link(rel="shortcut icon", href="./favicon.ico")
+    link(type="text/css", rel="stylesheet", href="./style.css")
+    body.bg-black
+      .header.fixed.w-100.z-5.flex.flrnw.flc.h-3.sm_h-3x.px-0x.sm_px-1.bg-green-3
+        a.flex.flrnw.fln.flc.mr-0x.sm_mr-1(href=site.url)
+          img.h-2.sm_h-3(src="./assets/logo.png", alt=`Logo HeroicMaps`)
+        .flex.fla.flcnw.h-2.relative.sm_h-3.mr-0x.md_mx-3
+          input#searchbox.w-100.fla.pl-1.bg-white-10.text-white.rounded-100.outline-none.sm_pl-3.text-1.xl_text-3.focus_bg-white-25
+        .hidden.sm_flex.fln.sm_h-3.flrar.flcnw
+          a.flex.fln.flcab.flcnw.w-4.md_mr-2(href='https://www.algolia.com/', target='_blank')
+            img.hidden.sm_inline-block.md_hidden(src='./assets/algolia-white.svg', alt='Powered by Algolia')
+            img.hidden.md_inline-block(src='./assets/powered-by.svg', alt='Powered by Algolia')
+      .content.pt-3.sm_pt-3x
+        .sidebar.w-5.p-0x.fixed.h-100vh-3x.overflow-y-auto.text-white
+          .font-bold.py-0x Sizes:
+          #size
+          .p-1
+            #tags
+          .p-1
+            #bundle
+        .ml-5
+          #hits.pt-1
+          #pagination
+
+      script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.9.0")
+      script(src="./script.js")
+

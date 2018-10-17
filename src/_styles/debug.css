@@ -1,0 +1,56 @@
+/* Debug utilities */
+.debug,
+.debug * {
+  outline: 1px solid blue;
+}
+.debug:before {
+  content: "N/A";
+  @apply absolute pin-t pin-l;
+  @apply bg-blue bold text-white;
+  @apply p-0x;
+}
+@screen sm {
+  .debug,
+  .debug * {
+    outline: 1px solid teal;
+  }
+  .debug:before {
+    content: "sm";
+    @apply bg-teal;
+  }
+}
+@screen md {
+  .debug,
+  .debug * {
+    outline: 1px solid orange;
+  }
+  .debug:before {
+    content: "md";
+    @apply bg-orange;
+  }
+}
+@screen lg {
+  .debug,
+  .debug * {
+    outline: 1px solid red;
+  }
+  .debug:before {
+    content: "lg";
+    @apply bg-red;
+  }
+}
+@screen xl {
+  .debug,
+  .debug * {
+    outline: 1px solid pink;
+  }
+  .debug:before {
+    content: "xl";
+    @apply bg-pink;
+  }
+}
+
+/* Make images without alt pop for debug */
+/* img:not([alt]) { */
+/*   filter: grayscale(100%); */
+/* } */
