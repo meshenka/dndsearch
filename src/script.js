@@ -27,36 +27,33 @@ function snippet(hit, key) {
   return _.get(hit, `_snippetResult.${key}.value`, _.get(hit, key));
 }
 
-// There is a slight variation in number between the pdf page index and the
-// real page notation
-function pageNumber(item) {
-  return _.get(item, 'pageIndex') + 11;
-}
-
 function thumbnailPath(item) {
-  const imageIndex = _.get(item, 'pageIndex') + 14;
+  const imageIndex = _.get(item, 'pageIndex') + 1;
   const paddedIndex = _.padStart(imageIndex, 4, '0');
   return `./assets/thumbnails/players-handbook/${paddedIndex}.png`;
 }
 
 function content(item) {
+  if (item.isTitle) {
+    const title = highlight(item, 'content');
+    return `<div class="text-3 bold text-red baskerville">${title}</div>`;
+  }
   return snippet(item, 'content');
 }
 
 function hitTemplate(item) {
-  console.info(item);
   return `
   <div class="w-100 border border-grey bg-grey--3 flex flrnw p-0x">
     <div 
       class="min-h-5 bg-4x bg-no-repeat flex flrnw flc relative" 
       style="background-image:url(${thumbnailPath(item)})"
     >
-      <div class="absolute pin-b pin-l p-0x bg-grey-3 text-white bold rounded-2">
-        Page ${pageNumber(item)} ${item.pageIndex}
+      <div class="absolute pin-b pin-l p-0x bg-grey-3 text-white text-2 baskerville rounded-2">
+        Page ${item.pageIndex}
       </div>
 
       <div class="ml-3x mr-0x bg-black-90 text-grey--1 rounded-2 p-1 leading-1">
-        <div>${content(item)}</div>
+        ${content(item)}
       </div>
     </div>
   </div>

@@ -66,6 +66,65 @@ async function generateText(pages, destination) {
   );
 }
 
+// The Player's Handbook we use is missing some pages (those that don't have any
+// text it), so it requires some additional work to get the real page number
+// from the file name. We'll do that be defining threshold of pages: if the file
+// is above a threshold, we should increase it's real pageIndex by one.
+function getThresholds(list) {
+  const first = _.first(list);
+  const result = [first];
+  if (list.length === 1) {
+    return result;
+  }
+
+  // Finding next threshold on the rest of the array
+  const tail = _.map(_.tail(list), item => item - 1);
+  result.push(...getThresholds(tail));
+  return result;
+}
+const missingPages = [
+  1,
+  2,
+  9,
+  10,
+  16,
+  25,
+  44,
+  120,
+  126,
+  142,
+  156,
+  162,
+  171,
+  172,
+  180,
+  184,
+  188,
+  199,
+  200,
+  206,
+  247,
+  268,
+  286,
+];
+const thresholds = getThresholds(missingPages);
+function getPageIndex(filepath) {
+  const filePageIndex = _.parseInt(
+    path.basename(filepath),
+    path.extname(filepath)
+  );
+
+  let pageIndex = filePageIndex;
+  let bonus = -1;
+  _.each(thresholds, threshold => {
+    if (pageIndex > threshold) {
+      bonus++;
+    }
+  });
+  pageIndex += bonus;
+  return pageIndex;
+}
+
 // Convert text to records
 async function generateRecords(texts, destination, bookName) {
   await firost.mkdirp(destination);
@@ -82,15 +141,12 @@ async function generateRecords(texts, destination, bookName) {
       // Skip if already extracted
       const paddedBasename = path.basename(textPath, '.txt');
       const recordPath = path.join(destination, `${paddedBasename}.json`);
-      if (fs.existsSync(recordPath)) {
-        return false;
-      }
 
       // Get parsed lines from the raw text
       const raw = await firost.read(textPath);
       const lines = refiner.lines(raw);
 
-      const pageIndex = _.parseInt(path.basename(textPath, '.txt'));
+      const pageIndex = getPageIndex(textPath);
       const commonData = {
         pageIndex,
         bookName,

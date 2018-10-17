@@ -1,6 +1,21 @@
 @import "./_styles/tailwind.css";
 @import "./_styles/debug.css";
 
+@font-face {
+  font-family: Baskerville;
+  src: url("./assets/fonts/Baskerville.otf") format("opentype");
+}
+@font-face {
+  font-family: Bookman;
+  src: url("./assets/fonts/Bookman.otf") format("opentype");
+}
+.baskerville {
+  font-family: Baskerville, sans-serif;
+}
+.bookman {
+  font-family: Bookman, sans-serif;
+}
+
 /* Global styles */
 a,
 a:active {
@@ -47,7 +62,7 @@ a:focus {
 
 /* Hits */
 .ais-highlight {
-  @apply bold text-red-1;
+  @apply bold text-yellow-1 underline;
 }
 
 /* Pagination */
@@ -62,7 +77,7 @@ a:focus {
 }
 .ais-pagination--item:hover,
 .ais-pagination--item__active {
-  @apply .bg-green-3 
+  @apply .bg-grey-3;
 }
 .ais-pagination--item:hover .ais-pagination--link,
 .ais-pagination--item__active .ais-pagination--link {
