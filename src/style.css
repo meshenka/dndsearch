@@ -61,6 +61,44 @@ a:focus {
 }
 
 /* Hits */
+.ais-hits {
+  @apply flex flrw;
+}
+.ais-hits--item {
+  @apply flex fln w-100 p-0x;
+}
+@screen md {
+  .ais-hits--item {
+    @apply w-50;
+  }
+}
+@screen md {
+  .ais-hits--item {
+    @apply w-33;
+  }
+}
+/**
+ * We style our hits template with custom classes instead of using Tailwind
+ * directly. It's a bit more cumbersome, but it allows us to use the ais- prefix
+ * on classes that is not removed by purgeCSS.
+ **/
+.ais-hits--custom {
+  @apply w-100 border border-grey bg-grey--3 flex flrnw p-0x;
+}
+.ais-hits--custom-wrapper {
+  @apply min-h-5 bg-4x bg-no-repeat flex flrnw flc relative;
+}
+.ais-hits--custom-thumbnail {
+  @apply absolute pin-b pin-l p-0x bg-grey-3 text-white text-2 baskerville rounded-2;
+}
+.ais-hits--custom-content {
+  @apply ml-3x mr-0x bg-black-90 text-grey--1 rounded-2 p-1 leading-1;
+}
+.ais-hits--custom-title  {
+  @apply text-3 bold text-red baskerville;
+}
+
+/* Highlight */
 .ais-highlight {
   @apply bold text-yellow-1 underline;
 }

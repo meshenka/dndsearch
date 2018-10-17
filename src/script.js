@@ -36,23 +36,23 @@ function thumbnailPath(item) {
 function content(item) {
   if (item.isTitle) {
     const title = highlight(item, 'content');
-    return `<div class="text-3 bold text-red baskerville">${title}</div>`;
+    return `<div class="ais-hits--custom-title">${title}</div>`;
   }
   return snippet(item, 'content');
 }
 
 function hitTemplate(item) {
   return `
-  <div class="w-100 border border-grey bg-grey--3 flex flrnw p-0x">
+  <div class="ais-hits--custom">
     <div 
-      class="min-h-5 bg-4x bg-no-repeat flex flrnw flc relative" 
+      class="ais-hits--custom-wrapper" 
       style="background-image:url(${thumbnailPath(item)})"
     >
-      <div class="absolute pin-b pin-l p-0x bg-grey-3 text-white text-2 baskerville rounded-2">
+      <div class="ais-hits--custom-thumbnail">
         Page ${item.pageIndex}
       </div>
 
-      <div class="ml-3x mr-0x bg-black-90 text-grey--1 rounded-2 p-1 leading-1">
+      <div class="ais-hits--custom-content">
         ${content(item)}
       </div>
     </div>
@@ -63,10 +63,6 @@ function hitTemplate(item) {
 search.addWidget(
   instantsearch.widgets.hits({
     container: '#hits',
-    cssClasses: {
-      root: 'flex flrw',
-      item: 'flex fln w-100 md_w-50 xl_w-33 p-0x',
-    },
     templates: {
       item: hitTemplate,
       empty: 'Sorry, no results found',
