@@ -1,5 +1,6 @@
 /* eslint-disable no-process-exit */
 import ProgressBar from 'progress';
+import sanitizeFilename from 'sanitize-filename';
 import firost from 'firost';
 import fs from 'fs';
 import os from 'os';
@@ -66,7 +67,7 @@ async function generateText(pages, destination) {
 }
 
 // Convert text to records
-async function generateRecords(texts, destination) {
+async function generateRecords(texts, destination, bookName) {
   await firost.mkdirp(destination);
   const pageCount = texts.length;
 
@@ -92,6 +93,8 @@ async function generateRecords(texts, destination) {
       const pageIndex = _.parseInt(path.basename(textPath, '.txt'));
       const commonData = {
         pageIndex,
+        bookName,
+        distinctKey: `${bookName}-${pageIndex}`,
       };
 
       // Build a set of records by aggregating text as paragraphs
@@ -149,7 +152,7 @@ async function generateRecords(texts, destination) {
   );
 }
 
-async function mergeRecordsInOneFile(source) {
+async function mergeRecordsInOneFile(source, bookName) {
   const allFiles = await firost.glob(`${source}/*.json`);
   let allRecords = [];
   await pMap(
@@ -164,7 +167,11 @@ async function mergeRecordsInOneFile(source) {
 
   allRecords = _.sortBy(allRecords, ['pageIndex', 'positionInPage']);
 
-  await firost.writeJson('./records.json', allRecords);
+  await firost.mkdirp('./records');
+  await firost.writeJson(
+    `./records/${sanitizeFilename(bookName)}.json`,
+    allRecords
+  );
 
   return allRecords;
 }
@@ -178,8 +185,8 @@ async function mergeRecordsInOneFile(source) {
 
     // Folders
     const input = path.resolve(process.argv[2]);
-    const basename = path.basename(input, path.extname(input));
-    const tmpFolder = path.join('./tmp', basename);
+    const bookName = path.basename(input, path.extname(input));
+    const tmpFolder = path.join('./tmp', bookName);
     const pageFolder = path.join(tmpFolder, 'pages');
     const imageFolder = path.join(tmpFolder, 'images');
     const textFolder = path.join(tmpFolder, 'text');
@@ -192,9 +199,9 @@ async function mergeRecordsInOneFile(source) {
     await generateText(pages, textFolder);
 
     const texts = await firost.glob(`${textFolder}/*.txt`);
-    await generateRecords(texts, recordFolder);
+    await generateRecords(texts, recordFolder, bookName);
 
-    await mergeRecordsInOneFile(recordFolder);
+    await mergeRecordsInOneFile(recordFolder, bookName);
   } catch (err) {
     console.info(err);
   }
