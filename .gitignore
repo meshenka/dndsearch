@@ -8,4 +8,5 @@ tmp
 *~
 *.pdf
 .envrc
+dist
 yarn-error.log

@@ -20,6 +20,8 @@ const settings = {
   attributesForFaceting: ['bookName'],
   distinct: 3,
   attributeForDistinct: 'distinctKey',
+  highlightPreTag: '<span class="ais-highlight">',
+  highlightPostTag: '</span>',
 };
 
 (async () => {

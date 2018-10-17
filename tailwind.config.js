@@ -142,6 +142,12 @@ const heightScale = {
   ...dimensionScale,
   '100vh': '100vh',
 };
+const backgroundScale = {
+  ...dimensionScale,
+  auto: 'auto',
+  cover: 'cover',
+  contain: 'contain',
+};
 
 const spacingScale = {
   '0': '0',
@@ -382,6 +388,7 @@ module.exports = {
   },
   textColors: colors,
   backgroundColors: colors,
+  backgroundSize: backgroundScale,
   borderWidths: {
     default: '1px',
     '0': '0',
