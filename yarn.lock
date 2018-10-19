@@ -3137,6 +3137,17 @@ firost@0.0.5:
     lodash "4.17.11"
     pify "4.0.0"
 
+firost@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/firost/-/firost-0.0.6.tgz#67d656a1524f88454798f249bc9c5ab2ef4d89bc"
+  integrity sha512-W3LWGiLcougeAg9e5O42HZHAJ9e1cIyv2ihtkYQgzOlJZZc/tKce2XT8mI/bQUKUqb2nn1R8F47i8EXQiKmQyw==
+  dependencies:
+    fs-extra "7.0.0"
+    glob "7.1.3"
+    json-stable-stringify "1.0.1"
+    lodash "4.17.11"
+    pify "4.0.0"
+
 flat-cache@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-1.3.0.tgz#d3030b32b38154f4e3b7e9c709f490f7ef97c481"
@@ -4755,6 +4766,11 @@ lodash@4.17.4:
   resolved "http://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
   integrity sha1-eCA6TRwyiuHYbcpkYONptX9AVa4=
 
+lodash@4.17.5:
+  version "4.17.5"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
+  integrity sha512-svL3uiZf1RwhH+cWrfZn3A4+U58wbP0tGVTLQPbjplZxZ8ROD9VLuNgsRniTlLe7OlSqR79RUehXgpBW/s0IQw==
+
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -5656,6 +5672,22 @@ performance-now@^2.1.0:
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
+pietro@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/pietro/-/pietro-0.0.4.tgz#5d1dcf67f27230de1bd4f2c6c2a43e67ed2a60d5"
+  integrity sha512-fXbayrdpfY9xno9TivmirjijUYCGgpWGJryJHvSAh8xDrJBBIQEfNPKJIu1QhcASKBnI5EpOC6Q5+jELF7UQ4Q==
+  dependencies:
+    chalk "2.4.1"
+    firost "0.0.6"
+    fs-extra "7.0.0"
+    lodash "4.17.5"
+    p-all "1.0.0"
+    p-map "2.0.0"
+    pify "3.0.0"
+    progress "2.0.1"
+    sanitize-filename "1.6.1"
+    which "1.3.1"
+
 pify@3.0.0, pify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
@@ -5891,6 +5923,11 @@ progress@2.0.0, progress@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.0.tgz#8a1be366bf8fc23db2bd23f10c6fe920b4389d1f"
   integrity sha1-ihvjZr+Pwj2yvSPxDG/pILQ4nR8=
+
+progress@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.1.tgz#c9242169342b1c29d275889c95734621b1952e31"
+  integrity sha512-OE+a6vzqazc+K6LxJrX5UPyKFvGnL5CYmq2jFGNIBWHpc4QyE49/YOumcrpQFJpfejmvRtbJzgO1zPmMCqlbBg==
 
 promise-inflight@^1.0.1:
   version "1.0.1"

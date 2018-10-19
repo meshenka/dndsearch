@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
+norska \
+  --from ./src \
+  --to ./dist
