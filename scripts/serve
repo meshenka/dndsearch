@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+norska \
+  --watch \
+  --from ./src \
+  --to ./dist
